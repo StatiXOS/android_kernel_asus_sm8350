@@ -226,7 +226,29 @@ struct lsensor_data
 	/* ASUS BSP Clay: average 5 lux for offset behavior to mitigate the low lux gap --- */
 	
 	bool freeze_psensor;
+
+	bool irq_enabled;
 };
+
+static void alsps_enable_irq(void)
+{
+	if (g_als_data->irq_enabled)
+		return;
+
+	enable_irq(ALSPS_SENSOR_IRQ);
+
+	g_als_data->irq_enabled = true;
+}
+
+static void alsps_disable_irq(void)
+{
+	if (!g_als_data->irq_enabled)
+		return;
+
+	disable_irq_nosync(ALSPS_SENSOR_IRQ);
+
+	g_als_data->irq_enabled = false;
+}
 
 /*=======================
  *|| I2c Stress Test Part ||
@@ -444,7 +466,7 @@ static int proximity_turn_onoff(bool bOn)
 		/*enable IRQ only when proximity and light sensor is off*/
 		if (g_ps_data->Device_switch_on == false && g_als_data->Device_switch_on == false) {
 			dbg("[IRQ] Enable irq !! \n");
-			enable_irq(ALSPS_SENSOR_IRQ);
+			alsps_enable_irq();
 		}
 #endif
 		/*set turn on register*/
@@ -488,7 +510,7 @@ static int proximity_turn_onoff(bool bOn)
 		/*enable IRQ only when proximity and light sensor is off*/
 		if (g_ps_data->Device_switch_on == false && g_als_data->Device_switch_on == false) {
 			dbg("[IRQ] Enable irq !! \n");
-			enable_irq(ALSPS_SENSOR_IRQ);
+			alsps_enable_irq();
 		}
 #endif
 
@@ -512,7 +534,7 @@ static int proximity_turn_onoff(bool bOn)
 		if(g_ps_data->Device_switch_on == true){
 			/*disable IRQ before switch off*/
 			dbg("[IRQ] Disable irq !! \n");
-			disable_irq_nosync(ALSPS_SENSOR_IRQ);
+			alsps_disable_irq();
 
 			ret = g_ALSPS_hw_client->mpsensor_hw->proximity_hw_turn_onoff(false);
 			if(ret < 0){
@@ -536,7 +558,7 @@ static int proximity_turn_onoff(bool bOn)
 			/*enable IRQ when light sensor is ON*/
 			if (g_als_data->Device_switch_on == true) {
 				dbg("[IRQ] Enable irq !! \n");
-				enable_irq(ALSPS_SENSOR_IRQ);
+				alsps_enable_irq();
 			}
 
 			/*diable the timer*/
@@ -877,7 +899,7 @@ static int light_turn_onoff(bool bOn)
 		/*enable IRQ only when proximity and light sensor is off*/
 		if (g_ps_data->Device_switch_on == false && g_als_data->Device_switch_on == false) {
 			dbg("[IRQ] Enable irq !! \n");
-			enable_irq(ALSPS_SENSOR_IRQ);
+			alsps_enable_irq();
 		}
 		g_als_data->Device_switch_on = true;
 		g_als_data->g_als_log_first_event = true;	
@@ -886,7 +908,7 @@ static int light_turn_onoff(bool bOn)
 		if(g_als_data->Device_switch_on == true){
 			/*disable IRQ before switch off*/		
 			dbg("[IRQ] Disable irq !! \n");
-			disable_irq_nosync(ALSPS_SENSOR_IRQ);
+			alsps_disable_irq();
 
 			/*Power OFF*/
 			ret = g_ALSPS_hw_client->mlsensor_hw->light_hw_turn_onoff(false);
@@ -906,7 +928,7 @@ static int light_turn_onoff(bool bOn)
 			/*enable IRQ when proximity sensor is ON*/
 			if (g_ps_data->Device_switch_on == true) {
 				dbg("[IRQ] Enable irq !! \n");
-				enable_irq(ALSPS_SENSOR_IRQ);
+				alsps_enable_irq();
 			}
 			proximity_check_period();
 		}
@@ -1033,7 +1055,7 @@ static int light_suspend_turn_off(bool bOn)
 	if(g_als_data->Device_switch_on == true){
 		/*disable IRQ before switch off*/
 		dbg("[IRQ] Disable irq !! \n");
-		disable_irq_nosync(ALSPS_SENSOR_IRQ);
+		alsps_disable_irq();
 
 		/*Power OFF*/
 		ret = g_ALSPS_hw_client->mlsensor_hw->light_hw_turn_onoff(false);
@@ -1051,7 +1073,7 @@ static int light_suspend_turn_off(bool bOn)
 		/*enable IRQ when proximity sensor is ON*/
 		if (g_ps_data->HAL_switch_on == true) {
 			dbg("[IRQ] Enable irq !! \n");
-			enable_irq(ALSPS_SENSOR_IRQ);
+			alsps_enable_irq();
 		}
 		g_ALSPS_hw_client->mlsensor_hw->light_hw_reset_ALS_dynamic_status();
 		g_als_data->dynamic_sensitive = g_ALSPS_hw_client->mlsensor_hw->light_hw_get_current_sensitive();
@@ -2488,7 +2510,7 @@ mutex_lock(&g_alsps_lock);
 ist_err:	
 	__pm_relax(g_alsps_wake_lock);
 	dbg("[IRQ] Enable irq !! \n");
-	enable_irq(ALSPS_SENSOR_IRQ);
+	alsps_enable_irq();
 mutex_unlock(&g_alsps_lock);
 
 }
@@ -2496,7 +2518,7 @@ mutex_unlock(&g_alsps_lock);
 static void ALSPS_irq_handler(void)
 {
 	dbg("[IRQ] Disable irq !! \n");
-	disable_irq_nosync(ALSPS_SENSOR_IRQ);
+	alsps_disable_irq();
 	
 	if(g_ALSPS_hw_client->ALSPS_hw_get_interrupt == NULL) {
 		err("ALSPS_hw_get_interrupt NOT SUPPORT. \n");
@@ -2509,7 +2531,7 @@ static void ALSPS_irq_handler(void)
 	return;
 irq_err:
 	dbg("[IRQ] Enable irq !! \n");
-	enable_irq(ALSPS_SENSOR_IRQ);
+	alsps_enable_irq();
 }
 
 static ALSPSsensor_GPIO mALSPSsensor_GPIO = {
