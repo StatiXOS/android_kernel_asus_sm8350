@@ -1,0 +1,34 @@
+# Define architecture.
+ARCH=arm64
+
+# Define branch and KMI generation
+BRANCH=android-msm-sake-5.4-android11-lts
+KMI_GENERATION=2
+
+# Define toolchain and binutils.
+CROSS_COMPILE=aarch64-elf-
+CROSS_COMPILE_COMPAT=arm-eabi-
+LINUX_GCC_CROSS_COMPILE_PREBUILTS_BIN=prebuilts/gcc/linux-x86/aarch64/aarch64-elf/bin
+LINUX_GCC_CROSS_COMPILE_ARM32_PREBUILTS_BIN=prebuilts/gcc/linux-x86/arm/arm-eabi/bin/
+
+# Define DTC paths.
+LIBUFDT_PREBUILTS_BIN=prebuilts-master/misc/linux-x86/libufdt
+DTC_EXT=${ROOT_DIR}/prebuilts/kernel-build-tools/linux-x86/bin/dtc
+export DTC_EXT
+DTC_OVERLAY_TEST_EXT=${ROOT_DIR}/prebuilts/kernel-build-tools/linux-x86/bin/ufdt_apply_overlay
+export DTC_OVERLAY_TEST_EXT
+
+# Define kernel source and defconfig.
+DEFCONFIG=vendor/sake_defconfig
+KERNEL_DIR=private/asus-msm-5.4
+
+# Artifacts to be copied over for the prebuilt repo.
+FILES+="
+arch/arm64/boot/Image
+arch/arm64/boot/dts/vendor/qcom/lahaina-v2.1.dtb
+arch/arm64/boot/dts/vendor/qcom/lahaina-v2.dtb
+arch/arm64/boot/dts/vendor/qcom/lahaina.dtb
+arch/arm64/boot/dts/vendor/qcom/lahainap-v2.1.dtb
+arch/arm64/boot/dts/vendor/qcom/lahainap-v2.dtb
+arch/arm64/boot/dts/vendor/qcom/lahainap.dtb
+"
