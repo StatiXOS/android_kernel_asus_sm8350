@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "75854d62_77a59929",
+        "filename": "scripts/Makefile.lib",
+        "patchSetId": 1
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-09-16T03:20:32Z",
+      "side": 1,
+      "message": "why not python3",
+      "revId": "0bc2ceb7a7d0450065b4761b3647d32bac2da8cc",
+      "serverId": "039621b9-0c7c-40f3-867c-684f4bc911d6"
+    }
+  ]
+}
