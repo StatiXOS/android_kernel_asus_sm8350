@@ -2,7 +2,7 @@
 ARCH=arm64
 
 # Define branch and KMI generation
-# BRANCH=android-msm-sake-5.4-android11-lts
+BRANCH=android11
 KMI_GENERATION=2
 
 # Define toolchain and binutils.
