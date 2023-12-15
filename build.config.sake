@@ -1,0 +1,43 @@
+# Define architecture
+ARCH=arm64
+
+# Define branch and KMI generation
+BRANCH=android11
+KMI_GENERATION=2
+
+# Define toolchain (TODO: Fix GCC compile and boot)
+# CROSS_COMPILE=aarch64-elf-
+# CROSS_COMPILE_COMPAT=arm-eabi-
+# LINUX_GCC_CROSS_COMPILE_PREBUILTS_BIN=prebuilts/gcc/linux-x86/aarch64/aarch64-elf/bin
+# LINUX_GCC_CROSS_COMPILE_ARM32_PREBUILTS_BIN=prebuilts/gcc/linux-x86/arm/arm-eabi/bin/
+COMPILER=clang
+LLVM=1
+CLANG_PREBUILT_BIN=prebuilts-master/clang/host/linux-x86/clang-r416183b/bin
+DEPMOD=depmod
+
+# Define DTC paths
+BUILDTOOLS_PREBUILT_BIN=build/build-tools/path/linux-x86
+DTC_EXT=${ROOT_DIR}/prebuilts/kernel-build-tools/linux-x86/bin/dtc
+LIBUFDT_PREBUILTS_BIN=prebuilts-master/misc/linux-x86/libufdt
+MKDTBO_EXT=${ROOT_DIR}/tools/libufdt/utils/src/mkdtboimg.py
+DTC_OVERLAY_TEST_EXT=${ROOT_DIR}/prebuilts/kernel-build-tools/linux-x86/bin/ufdt_apply_overlay
+export DTC_EXT
+export DTC_OVERLAY_TEST_EXT
+
+# Define DTB/DTBO directories
+DTB_DIR=vendor/qcom
+
+# Define kernel source and defconfig
+DEFCONFIG=vendor/sake_defconfig
+KERNEL_DIR=private/asus-msm-5.4
+
+# Artifacts to be copied over for the prebuilt repo
+FILES+="
+arch/arm64/boot/Image
+arch/${ARCH}/boot/dts/${DTB_DIR}/*.dtb*
+arch/${ARCH}/boot/dts/${DTB_DIR}/dtbo.img
+"
+
+# Build system flags
+IN_KERNEL_MODULES=1
+DO_NOT_STRIP_MODULES=0
