@@ -12,7 +12,7 @@ KMI_GENERATION=2
 # LINUX_GCC_CROSS_COMPILE_ARM32_PREBUILTS_BIN=prebuilts/gcc/linux-x86/arm/arm-eabi/bin/
 COMPILER=clang
 LLVM=1
-CLANG_PREBUILT_BIN=prebuilts-master/clang/host/linux-x86/clang-r416183b/bin
+CLANG_PREBUILT_BIN=prebuilts-master/clang/host/linux-x86/clang-r487747c/bin
 DEPMOD=depmod
 
 # Define DTC paths
